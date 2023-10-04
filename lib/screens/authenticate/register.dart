@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:usermanagementapp/components/custom_elevatedButton.dart';
 import 'package:usermanagementapp/components/custom_textfield.dart';
 import 'package:usermanagementapp/screens/authenticate/login.dart';
-import 'package:usermanagementapp/screens/home/home.dart';
 
 class RegistrationView extends StatefulWidget {
   const RegistrationView({super.key});
@@ -33,15 +32,16 @@ class _RegistrationViewState extends State<RegistrationView> {
       'name': _name.text,
       'dateOfBirth': _dob.text,
       'gender': genderSelected,
-      'mobile': _phoneNumber.text
+      'mobile': _phoneNumber.text,
+      'email': _email.text,
     }).then((value) {
       print("User Added");
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const HomePage(),
-      //   ),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
       showLoader = false;
     }).catchError((error) => print("Failed to add user: $error"));
   }
@@ -271,7 +271,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         MaterialPageRoute(
                             builder: (context) => const LoginPage()));
                   },
-                  child: Text("Already have a Account? Login here"),
+                  child: const Text("Already have a Account? Login here"),
                 ),
                 customSizeBox,
                 Visibility(
