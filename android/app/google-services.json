@@ -12,7 +12,20 @@
           "package_name": "com.example.usermanagementapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "958006601823-9460nc4jbogiggvdofr258o9s3pp1rnk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.usermanagementapp",
+            "certificate_hash": "16ac2906b56ab0dc617f0619c08eb023a4b39d21"
+          }
+        },
+        {
+          "client_id": "958006601823-lh05ti6fsua430kvtls699jl4kso8u5j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBc4Jm5wNjihJ29QKY9G7M7sSdHz6-HJl0"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "958006601823-lh05ti6fsua430kvtls699jl4kso8u5j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "958006601823-68roq8j4kl59894uuuojapbfgbv3ifdq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.usermanagementapp.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
