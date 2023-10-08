@@ -56,7 +56,7 @@ class _RegistrationViewState extends State<RegistrationView> {
         email: _email.text,
         password: _password.text,
       );
-      updateUserProfile(credential.user?.uid);
+      await updateUserProfile(credential.user?.uid);
 
       // Registration successful, show a congratulatory snackbar
 
@@ -146,6 +146,7 @@ class _RegistrationViewState extends State<RegistrationView> {
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Center(
           child: Text("User Registration"),

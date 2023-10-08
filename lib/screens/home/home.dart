@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:usermanagementapp/screens/authenticate/login.dart';
+import 'package:usermanagementapp/screens/authenticate/login_with_google.dart';
 
 class HomePage extends StatefulWidget {
   final User? user;
@@ -52,7 +58,7 @@ class _HomePageState extends State<HomePage> {
   Future<bool?> checkEmailVerification() async {
     final emailVerified = await widget.user?.emailVerified;
     setState(() {
-      isEmailVerified = true;
+      isEmailVerified = emailVerified ?? false;
     });
   }
 
@@ -189,12 +195,19 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      displayAlertWithFun(
-                          headingText: "Update your Profile Photo",
-                          hintText: "Image URL",
-                          onPressed: updateProfileImage,
-                          fieldcontroller: _updatePhotoURL);
+                    onTap: () async {
+                      final newPhotoURL =
+                          await uploadImageAndGetLink('gallery');
+                      if (newPhotoURL != null) {
+                        setState(() {
+                          photoURL = newPhotoURL;
+                        });
+                      }
+                      // displayAlertWithFun(
+                      //     headingText: "Update your Profile Photo",
+                      //     hintText: "Image URL",
+                      //     onPressed: updateProfileImage,
+                      //     fieldcontroller: _updatePhotoURL);
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
@@ -266,7 +279,11 @@ class _HomePageState extends State<HomePage> {
               ),
               title: const Text("Sign Out"),
               onTap: () async {
-                await FirebaseAuth.instance.signOut();
+                if (isGoogleSignIn(widget.user!)) {
+                  await GoogleSignOut();
+                } else {
+                  await FirebaseAuth.instance.signOut();
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -357,4 +374,39 @@ class _HomePageState extends State<HomePage> {
         .then((value) => print("User Deleted"))
         .catchError((error) => print("Failed to delete user: $error"));
   }
+}
+
+final FirebaseStorage storage = FirebaseStorage.instance;
+final ImagePicker _picker = ImagePicker();
+
+Future<String?> uploadImageAndGetLink(inputsource) async {
+  final XFile? pickedImage = await _picker.pickImage(
+    source: inputsource == 'camera' ? ImageSource.camera : ImageSource.gallery,
+  );
+
+  if (pickedImage == null) {
+    return null;
+  }
+  try {
+    final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    final Reference reference = storage.ref().child('images/$fileName');
+    await reference.putFile(File(pickedImage.path));
+    final String downloadURL = await reference.getDownloadURL();
+    return downloadURL;
+  } catch (e) {
+    if (kDebugMode) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+  return null;
+}
+
+bool isGoogleSignIn(User user) {
+  for (UserInfo userInfo in user.providerData) {
+    if (userInfo.providerId == 'google.com') {
+      return true;
+    }
+  }
+  return false;
 }

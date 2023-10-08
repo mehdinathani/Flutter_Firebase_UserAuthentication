@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:usermanagementapp/components/custom_elevatedButton.dart';
 import 'package:usermanagementapp/components/custom_textfield.dart';
+import 'package:usermanagementapp/screens/authenticate/forgetPassword_screen.dart';
+import 'package:usermanagementapp/screens/authenticate/login_with_google.dart';
 import 'package:usermanagementapp/screens/authenticate/register.dart';
 import 'package:usermanagementapp/screens/home/home.dart';
 
@@ -105,75 +108,109 @@ class _LoginPageState extends State<LoginPage> {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Login"),
       ),
       body: SafeArea(
-          child: Column(
-        children: [
-          customSizeBox,
-          CustomTextField(controller: _email, hintText: "Email address"),
-          customSizeBox,
-          passwordField,
-          customSizeBox,
-          Row(
-            children: [
-              Checkbox(
-                  value: rememberme,
-                  onChanged: (bool? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        rememberme = newValue;
-                      });
-                    }
-                  }),
-              const Text("Remember me.")
-            ],
-          ),
-          customSizeBox,
-          ElevatedButtonCusstom(
-            buttonText: "Login",
-            onPressed: () async {
-              if (_email.text.isEmpty || _password.text.isEmpty) {
-                customSnackBarMSG = "All Fields are Required.";
-                setState(() {
-                  showSnackbar(customSnackBarMSG);
-                });
-              } else {
-                await loginUserWithEmail();
-                setState(() {
-                  showSnackbar(customSnackBarMSG);
-                });
-              }
-            },
-          ),
-          customSizeBox,
-          InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()));
-            },
-            child: const Text("Forget Password"),
-          ),
-          customSizeBox,
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RegistrationView()));
-            },
-            child: const Text("Don't have a Account? Register here."),
-          ),
-          customSizeBox,
-          Visibility(
-            visible: showLoader,
-            child: CircularProgressIndicator(
-              color: Colors.blue.shade900,
-              backgroundColor: Colors.black,
+          child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            customSizeBox,
+            CustomTextField(controller: _email, hintText: "Email address"),
+            customSizeBox,
+            passwordField,
+            customSizeBox,
+            Row(
+              children: [
+                Checkbox(
+                    value: rememberme,
+                    onChanged: (bool? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          rememberme = newValue;
+                        });
+                      }
+                    }),
+                const Text("Remember me.")
+              ],
             ),
-          ),
-        ],
+            customSizeBox,
+            ElevatedButtonCusstom(
+              buttonText: "Login",
+              onPressed: () async {
+                if (_email.text.isEmpty || _password.text.isEmpty) {
+                  customSnackBarMSG = "All Fields are Required.";
+                  setState(() {
+                    showSnackbar(customSnackBarMSG);
+                  });
+                } else {
+                  await loginUserWithEmail();
+                  setState(() {
+                    showSnackbar(customSnackBarMSG);
+                  });
+                }
+              },
+            ),
+            customSizeBox,
+            ElevatedButtonCusstom(
+              buttonText: "Sign in With Google",
+              onPressed: () async {
+                setState(() {
+                  showLoader = true;
+                });
+                await loginWithGoogle();
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  if (kDebugMode) {
+                    print(user.displayName);
+                    print(user.email);
+                  }
+                  await updateUserProfilefromGoogle(user);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                user: user,
+                              )));
+                }
+                customSnackBarMSG = "Login Successfull";
+                setState(() {
+                  showLoader = false;
+                });
+              },
+            ),
+            customSizeBox,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ForgetPasswordScreen()));
+              },
+              child: const Text("Forget Password"),
+            ),
+            customSizeBox,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegistrationView()));
+              },
+              child: const Text("Don't have a Account? Register here."),
+            ),
+            customSizeBox,
+            Visibility(
+              visible: showLoader,
+              child: CircularProgressIndicator(
+                color: Colors.blue.shade900,
+                backgroundColor: Colors.black,
+              ),
+            ),
+          ],
+        ),
       )),
     );
   }
