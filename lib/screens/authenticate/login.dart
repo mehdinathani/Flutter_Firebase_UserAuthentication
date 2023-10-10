@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:usermanagementapp/components/custom_elevatedButton.dart';
 import 'package:usermanagementapp/components/custom_textfield.dart';
 import 'package:usermanagementapp/screens/authenticate/forgetPassword_screen.dart';
+import 'package:usermanagementapp/screens/authenticate/login_With_Twitter.dart';
+import 'package:usermanagementapp/screens/authenticate/login_with_facebook.dart';
 import 'package:usermanagementapp/screens/authenticate/login_with_google.dart';
 import 'package:usermanagementapp/screens/authenticate/register.dart';
 import 'package:usermanagementapp/screens/home/home.dart';
@@ -168,6 +170,62 @@ class _LoginPageState extends State<LoginPage> {
                     print(user.email);
                   }
                   await updateUserProfilefromGoogle(user);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                user: user,
+                              )));
+                }
+                customSnackBarMSG = "Login Successfull";
+                setState(() {
+                  showLoader = false;
+                });
+              },
+            ),
+            customSizeBox,
+            ElevatedButtonCusstom(
+              buttonText: "Sign in With Facebook",
+              onPressed: () async {
+                setState(() {
+                  showLoader = true;
+                });
+                await loginWithFB();
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  if (kDebugMode) {
+                    print(user.displayName);
+                    print(user.email);
+                  }
+                  await updateUserProfilefromFB(user);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                user: user,
+                              )));
+                }
+                customSnackBarMSG = "Login Successfull";
+                setState(() {
+                  showLoader = false;
+                });
+              },
+            ),
+            customSizeBox,
+            ElevatedButtonCusstom(
+              buttonText: "Sign in With Twitter",
+              onPressed: () async {
+                setState(() {
+                  showLoader = true;
+                });
+                await loginWithTwitter();
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  if (kDebugMode) {
+                    print(user.displayName);
+                    print(user.email);
+                  }
+                  await updateUserProfilefromTwitter(user);
                   Navigator.push(
                       context,
                       MaterialPageRoute(

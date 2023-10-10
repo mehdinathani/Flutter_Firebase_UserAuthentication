@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="facebook_app_id">866310647965666</string>
+    <string name="facebook_client_token">afd399dbb22e21cad8ba9084a77998f3</string>
+
+    <string name="twitter_consumer_key" translatable="false"> WTmwlymFdzbVQhnBiq8KbA6aJ </string>
+    <string name="twitter_consumer_secret" translatable="false"> ayLDAPnCQi4L0YivWAga6RYtxr6w0UAdthyVcwwS4D2P7xzhhN </string>
+</resources>
+

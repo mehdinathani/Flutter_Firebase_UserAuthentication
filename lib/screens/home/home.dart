@@ -155,6 +155,33 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Future<String?> _showUpdateProfilePictureDialog() {
+      return showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Update Profile Picture using"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () async {
+                  final newPhotoURL = await uploadImageAndGetLink('camera');
+                  Navigator.of(context).pop(newPhotoURL); // Close the dialog
+                },
+                child: Text("Camera"),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final newPhotoURL = await uploadImageAndGetLink('gallery');
+                  Navigator.of(context).pop(newPhotoURL); // Close the dialog
+                },
+                child: Text("Gallery"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     getUserData();
     var customSizeBox = const SizedBox(height: 20);
 
@@ -197,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                   GestureDetector(
                     onTap: () async {
                       final newPhotoURL =
-                          await uploadImageAndGetLink('gallery');
+                          await _showUpdateProfilePictureDialog();
                       if (newPhotoURL != null) {
                         setState(() {
                           photoURL = newPhotoURL;
@@ -264,13 +291,12 @@ class _HomePageState extends State<HomePage> {
             ),
             customSizeBox,
             ListTile(
-              leading: Icon(
-                Icons.delete,
-                color: Colors.red,
-              ),
-              title: Text("Delete The Account"),
-              onTap: deleteAccoutFunction,
-            ),
+                leading: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                title: Text("Delete The Account"),
+                onTap: deleteAccoutFunction),
             customSizeBox,
             ListTile(
               leading: const Icon(
@@ -336,8 +362,8 @@ class _HomePageState extends State<HomePage> {
     final bool shouldDelete = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Account'),
-        content: Text(
+        title: const Text('Delete Account'),
+        content: const Text(
             'Are you sure you want to delete your account? This cannot be undone.'),
         actions: [
           TextButton(
@@ -356,12 +382,16 @@ class _HomePageState extends State<HomePage> {
       // Delete the user's data from Firestore.
       await deleteUser();
 
-      // Delete the user's account from Firebase Auth.
-      await FirebaseAuth.instance.currentUser!.delete();
-      final FirebaseAuth _auth = FirebaseAuth.instance;
-      await _auth.currentUser?.delete();
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const LoginPage()));
+      if (isFacebookLinked(widget.user!)) {
+        deleteFacebookUserAccount();
+      } else {
+        // Delete the user's account from Firebase Auth.
+        await FirebaseAuth.instance.currentUser!.delete();
+        final FirebaseAuth _auth = FirebaseAuth.instance;
+        await _auth.currentUser?.delete();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const LoginPage()));
+      }
     }
   }
 
@@ -373,6 +403,56 @@ class _HomePageState extends State<HomePage> {
         .delete()
         .then((value) => print("User Deleted"))
         .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+  // Function to check if the user is linked with Facebook.
+  bool isFacebookLinked(User user) {
+    for (UserInfo userInfo in user.providerData) {
+      if (userInfo.providerId == 'facebook.com') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+// Function to delete the user account linked with Facebook.
+  Future<void> deleteFacebookUserAccount() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      // User is not logged in.
+      return;
+    }
+
+    if (isFacebookLinked(user)) {
+      try {
+        // Delete the user's account.
+        await user.delete();
+
+        // Optionally, you can also unlink the Facebook provider:
+        // await user.unlink('facebook.com');
+
+        // Sign the user out after deleting the account.
+        await FirebaseAuth.instance.signOut();
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+
+        // Handle successful deletion or other actions (e.g., navigate to a different screen).
+        // ...
+      } catch (e) {
+        // Handle any errors that occur during the account deletion.
+        print('Error deleting account: $e');
+      }
+    } else {
+      // User is not linked with Facebook.
+      // Handle this case as needed (e.g., show a message to the user).
+      print('User is not linked with Facebook.');
+    }
   }
 }
 
