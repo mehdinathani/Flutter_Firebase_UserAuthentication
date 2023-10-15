@@ -305,8 +305,10 @@ class _HomePageState extends State<HomePage> {
               ),
               title: const Text("Sign Out"),
               onTap: () async {
-                if (isGoogleSignIn(widget.user!)) {
-                  await GoogleSignOut();
+                if (widget.user != null) {
+                  if (isGoogleSignIn(widget.user!)) {
+                    await GoogleSignOut();
+                  }
                 } else {
                   await FirebaseAuth.instance.signOut();
                 }
@@ -382,7 +384,7 @@ class _HomePageState extends State<HomePage> {
       // Delete the user's data from Firestore.
       await deleteUser();
 
-      if (isFacebookLinked(widget.user!)) {
+      if (await isFacebookLinked(widget.user!)) {
         deleteFacebookUserAccount();
       } else {
         // Delete the user's account from Firebase Auth.
@@ -422,9 +424,7 @@ class _HomePageState extends State<HomePage> {
     if (user == null) {
       // User is not logged in.
       return;
-    }
-
-    if (isFacebookLinked(user)) {
+    } else if (isFacebookLinked(user)) {
       try {
         // Delete the user's account.
         await user.delete();

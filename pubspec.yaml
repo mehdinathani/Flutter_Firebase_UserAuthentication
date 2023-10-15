@@ -44,8 +44,9 @@ dependencies:
   path_provider: ^2.1.1
   path: ^1.8.3
   google_sign_in: ^6.1.5
-  flutter_facebook_auth: ^6.0.2
-  twitter_login: ^4.4.2
+  flutter_facebook_auth: '^3.5.0'
+  twitter_login: ^4.0.1
+  github_sign_in: ^0.0.5-dev.4
 
 dev_dependencies:
   flutter_test:

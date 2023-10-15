@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:twitter_login/twitter_login.dart';
+import 'package:usermanagementapp/components/Config.dart';
 
 Future<UserCredential> signInWithTwitterNative() async {
   // Create a TwitterLogin instance
   final twitterLogin = new TwitterLogin(
-      apiKey: 'WTmwlymFdzbVQhnBiq8KbA6aJ',
-      apiSecretKey: 'ayLDAPnCQi4L0YivWAga6RYtxr6w0UAdthyVcwwS4D2P7xzhhN',
-      redirectURI: 'usermanagemeentapp.firebaseapp.com/__/auth/handler');
+      apiKey: ApiKeys.twitterConsumerKey,
+      apiSecretKey: ApiKeys.twitterConsumerSecret,
+      redirectURI: ApiKeys.twitterRedirectURL);
 
   // Trigger the sign-in flow
   final authResult = await twitterLogin.login();

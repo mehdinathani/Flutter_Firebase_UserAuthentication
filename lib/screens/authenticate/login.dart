@@ -6,6 +6,7 @@ import 'package:usermanagementapp/components/custom_textfield.dart';
 import 'package:usermanagementapp/screens/authenticate/forgetPassword_screen.dart';
 import 'package:usermanagementapp/screens/authenticate/login_With_Twitter.dart';
 import 'package:usermanagementapp/screens/authenticate/login_with_facebook.dart';
+import 'package:usermanagementapp/screens/authenticate/login_with_github.dart';
 import 'package:usermanagementapp/screens/authenticate/login_with_google.dart';
 import 'package:usermanagementapp/screens/authenticate/register.dart';
 import 'package:usermanagementapp/screens/home/home.dart';
@@ -117,157 +118,187 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            customSizeBox,
-            CustomTextField(controller: _email, hintText: "Email address"),
-            customSizeBox,
-            passwordField,
-            customSizeBox,
-            Row(
-              children: [
-                Checkbox(
-                    value: rememberme,
-                    onChanged: (bool? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          rememberme = newValue;
-                        });
-                      }
-                    }),
-                const Text("Remember me.")
-              ],
-            ),
-            customSizeBox,
-            ElevatedButtonCusstom(
-              buttonText: "Login",
-              onPressed: () async {
-                if (_email.text.isEmpty || _password.text.isEmpty) {
-                  customSnackBarMSG = "All Fields are Required.";
-                  setState(() {
-                    showSnackbar(customSnackBarMSG);
-                  });
-                } else {
-                  await loginUserWithEmail();
-                  setState(() {
-                    showSnackbar(customSnackBarMSG);
-                  });
-                }
-              },
-            ),
-            customSizeBox,
-            ElevatedButtonCusstom(
-              buttonText: "Sign in With Google",
-              onPressed: () async {
-                setState(() {
-                  showLoader = true;
-                });
-                await loginWithGoogle();
-                final user = FirebaseAuth.instance.currentUser;
-                if (user != null) {
-                  if (kDebugMode) {
-                    print(user.displayName);
-                    print(user.email);
-                  }
-                  await updateUserProfilefromGoogle(user);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                user: user,
-                              )));
-                }
-                customSnackBarMSG = "Login Successfull";
-                setState(() {
-                  showLoader = false;
-                });
-              },
-            ),
-            customSizeBox,
-            ElevatedButtonCusstom(
-              buttonText: "Sign in With Facebook",
-              onPressed: () async {
-                setState(() {
-                  showLoader = true;
-                });
-                await loginWithFB();
-                final user = FirebaseAuth.instance.currentUser;
-                if (user != null) {
-                  if (kDebugMode) {
-                    print(user.displayName);
-                    print(user.email);
-                  }
-                  await updateUserProfilefromFB(user);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                user: user,
-                              )));
-                }
-                customSnackBarMSG = "Login Successfull";
-                setState(() {
-                  showLoader = false;
-                });
-              },
-            ),
-            customSizeBox,
-            ElevatedButtonCusstom(
-              buttonText: "Sign in With Twitter",
-              onPressed: () async {
-                setState(() {
-                  showLoader = true;
-                });
-                await loginWithTwitter();
-                final user = FirebaseAuth.instance.currentUser;
-                if (user != null) {
-                  if (kDebugMode) {
-                    print(user.displayName);
-                    print(user.email);
-                  }
-                  await updateUserProfilefromTwitter(user);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                user: user,
-                              )));
-                }
-                customSnackBarMSG = "Login Successfull";
-                setState(() {
-                  showLoader = false;
-                });
-              },
-            ),
-            customSizeBox,
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ForgetPasswordScreen()));
-              },
-              child: const Text("Forget Password"),
-            ),
-            customSizeBox,
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegistrationView()));
-              },
-              child: const Text("Don't have a Account? Register here."),
-            ),
-            customSizeBox,
-            Visibility(
-              visible: showLoader,
-              child: CircularProgressIndicator(
-                color: Colors.blue.shade900,
-                backgroundColor: Colors.black,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              customSizeBox,
+              CustomTextField(controller: _email, hintText: "Email address"),
+              customSizeBox,
+              passwordField,
+              customSizeBox,
+              Row(
+                children: [
+                  Checkbox(
+                      value: rememberme,
+                      onChanged: (bool? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            rememberme = newValue;
+                          });
+                        }
+                      }),
+                  const Text("Remember me.")
+                ],
               ),
-            ),
-          ],
+              customSizeBox,
+              ElevatedButtonCusstom(
+                buttonText: "Login",
+                onPressed: () async {
+                  if (_email.text.isEmpty || _password.text.isEmpty) {
+                    customSnackBarMSG = "All Fields are Required.";
+                    setState(() {
+                      showSnackbar(customSnackBarMSG);
+                    });
+                  } else {
+                    await loginUserWithEmail();
+                    setState(() {
+                      showSnackbar(customSnackBarMSG);
+                    });
+                  }
+                },
+              ),
+              customSizeBox,
+              ElevatedButtonCusstom(
+                buttonText: "Sign in With Google",
+                onPressed: () async {
+                  setState(() {
+                    showLoader = true;
+                  });
+                  await loginWithGoogle();
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    if (kDebugMode) {
+                      print(user.displayName);
+                      print(user.email);
+                    }
+                    await updateUserProfilefromGoogle(user);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  user: user,
+                                )));
+                  }
+                  customSnackBarMSG = "Login Successfull";
+                  setState(() {
+                    showLoader = false;
+                  });
+                },
+              ),
+              customSizeBox,
+              ElevatedButtonCusstom(
+                buttonText: "Sign in With Facebook",
+                onPressed: () async {
+                  setState(() {
+                    showLoader = true;
+                  });
+                  await loginWithFB();
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    if (kDebugMode) {
+                      print(user.displayName);
+                      print(user.email);
+                    }
+                    await updateUserProfilefromFB(user);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  user: user,
+                                )));
+                  }
+                  customSnackBarMSG = "Login Successfull";
+                  setState(() {
+                    showLoader = false;
+                  });
+                },
+              ),
+              customSizeBox,
+              ElevatedButtonCusstom(
+                buttonText: "Sign in With Twitter",
+                onPressed: () async {
+                  setState(() {
+                    showLoader = true;
+                  });
+                  await loginWithTwitter();
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    if (kDebugMode) {
+                      print(user.displayName);
+                      print(user.email);
+                    }
+                    await updateUserProfilefromTwitter(user);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  user: user,
+                                )));
+                  }
+                  customSnackBarMSG = "Login Successfull";
+                  setState(() {
+                    showLoader = false;
+                  });
+                },
+              ),
+              customSizeBox,
+              ElevatedButtonCusstom(
+                buttonText: "Sign in With Github",
+                onPressed: () async {
+                  setState(() {
+                    showLoader = true;
+                  });
+                  await loginWithGithub(context);
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    if (kDebugMode) {
+                      print(user.displayName);
+                      print(user.email);
+                    }
+                    await updateUserProfilefromGithub(user);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  user: user,
+                                )));
+                  }
+                  customSnackBarMSG = "Login Successfull";
+                  setState(() {
+                    showLoader = false;
+                  });
+                },
+              ),
+              customSizeBox,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ForgetPasswordScreen()));
+                },
+                child: const Text("Forget Password"),
+              ),
+              customSizeBox,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegistrationView()));
+                },
+                child: const Text("Don't have a Account? Register here."),
+              ),
+              customSizeBox,
+              Visibility(
+                visible: showLoader,
+                child: CircularProgressIndicator(
+                  color: Colors.blue.shade900,
+                  backgroundColor: Colors.black,
+                ),
+              ),
+            ],
+          ),
         ),
       )),
     );
