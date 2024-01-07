@@ -106,6 +106,7 @@ class _RegistrationViewState extends State<RegistrationView> {
       decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email Address",
+          hintStyle: const TextStyle(color: Colors.white),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
     );
 
@@ -113,6 +114,7 @@ class _RegistrationViewState extends State<RegistrationView> {
       decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Name",
+          hintStyle: const TextStyle(color: Colors.white),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
       controller: _name,
     );
@@ -134,6 +136,7 @@ class _RegistrationViewState extends State<RegistrationView> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Password",
+            hintStyle: const TextStyle(color: Colors.white),
             suffixIcon: IconButton(
               icon:
                   Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
@@ -149,7 +152,10 @@ class _RegistrationViewState extends State<RegistrationView> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Center(
-          child: Text("User Registration"),
+          child: Text(
+            "User Registration",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: SafeArea(
@@ -187,10 +193,11 @@ class _RegistrationViewState extends State<RegistrationView> {
                 Container(
                   // color: Colors.amber,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.height * 0.07,
+                  height: MediaQuery.of(context).size.height * 0.09,
                   padding: const EdgeInsets.all(20),
                   alignment: Alignment.centerLeft,
                   child: DropdownButton<String>(
+                    isExpanded: true,
                     hint: const Text(
                       "Select Gender",
                       style: TextStyle(fontSize: 20),

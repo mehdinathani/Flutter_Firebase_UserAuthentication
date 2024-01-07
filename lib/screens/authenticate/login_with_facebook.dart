@@ -59,7 +59,7 @@ updateUserProfilefromFB(User user) {
     'isEmailVerified': user.emailVerified,
   }).then((value) {
     print("User Added");
-  }).catchError((error) => print("Failed to add user: $error"));
+  }).catchError((error) => debugPrint("Failed to add user: $error"));
 }
 
 signOutFB() async {

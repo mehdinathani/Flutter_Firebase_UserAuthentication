@@ -187,13 +187,22 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text("Home Page"),
+          title: const Center(
+            child: Text(
+              "Home Page",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+          ),
           leading: Builder(builder: (context) {
             return IconButton(
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
-              icon: const Icon(Icons.menu),
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.black,
+              ),
             );
           })),
       body: const SafeArea(
@@ -218,7 +227,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.blue),
+              decoration: const BoxDecoration(color: Colors.white),
               child: Column(
                 children: [
                   GestureDetector(
@@ -257,7 +266,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Text(
                       userStoreData['name'] ?? "Display name not updated",
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20, color: Colors.black),
                     ),
                   ),
                 ],

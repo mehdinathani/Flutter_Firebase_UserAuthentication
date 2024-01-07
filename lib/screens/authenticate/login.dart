@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:usermanagementapp/components/custom_elevatedButton.dart';
+import 'package:usermanagementapp/components/custom_imagebox.dart';
 import 'package:usermanagementapp/components/custom_textfield.dart';
 import 'package:usermanagementapp/screens/authenticate/forgetPassword_screen.dart';
 import 'package:usermanagementapp/screens/authenticate/login_With_Twitter.dart';
@@ -98,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: "Password",
+            hintStyle: const TextStyle(color: Colors.white),
             suffixIcon: IconButton(
               icon:
                   Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
@@ -113,7 +115,12 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Login"),
+        title: const Center(
+          child: Text(
+            "Login",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
       body: SafeArea(
           child: Padding(
@@ -158,117 +165,231 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               customSizeBox,
-              ElevatedButtonCusstom(
-                buttonText: "Sign in With Google",
-                onPressed: () async {
-                  setState(() {
-                    showLoader = true;
-                  });
-                  await loginWithGoogle();
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    if (kDebugMode) {
-                      print(user.displayName);
-                      print(user.email);
-                    }
-                    await updateUserProfilefromGoogle(user);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  user: user,
-                                )));
-                  }
-                  customSnackBarMSG = "Login Successfull";
-                  setState(() {
-                    showLoader = false;
-                  });
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomImageBox(
+                    onTap: () async {
+                      setState(() {
+                        showLoader = true;
+                      });
+                      await loginWithGoogle();
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        if (kDebugMode) {
+                          print(user.displayName);
+                          print(user.email);
+                        }
+                        await updateUserProfilefromGoogle(user);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      user: user,
+                                    )));
+                      }
+                      customSnackBarMSG = "Login Successfull";
+                      setState(() {
+                        showLoader = false;
+                      });
+                    },
+                    imagePath: "assets/images/glogo.png",
+                  ),
+                  CustomImageBox(
+                    onTap: () async {
+                      setState(() {
+                        showLoader = true;
+                      });
+                      await loginWithFB();
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        if (kDebugMode) {
+                          print(user.displayName);
+                          print(user.email);
+                        }
+                        await updateUserProfilefromFB(user);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      user: user,
+                                    )));
+                      }
+                      customSnackBarMSG = "Login Successfull";
+                      setState(() {
+                        showLoader = false;
+                      });
+                    },
+                    imagePath: "assets/images/fblogo.png",
+                  ),
+                  CustomImageBox(
+                    onTap: () async {
+                      setState(() {
+                        showLoader = true;
+                      });
+                      await loginWithTwitter();
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        if (kDebugMode) {
+                          print(user.displayName);
+                          print(user.email);
+                        }
+                        await updateUserProfilefromTwitter(user);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      user: user,
+                                    )));
+                      }
+                      customSnackBarMSG = "Login Successfull";
+                      setState(() {
+                        showLoader = false;
+                      });
+                    },
+                    imagePath: "assets/images/twlogo.png",
+                  ),
+                  CustomImageBox(
+                    onTap: () async {
+                      setState(() {
+                        showLoader = true;
+                      });
+                      await loginWithGithub(context);
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        if (kDebugMode) {
+                          print(user.displayName);
+                          print(user.email);
+                        }
+                        await updateUserProfilefromGithub(user);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      user: user,
+                                    )));
+                      }
+                      customSnackBarMSG = "Login Successfull";
+                      setState(() {
+                        showLoader = false;
+                      });
+                    },
+                    imagePath: "assets/images/githublogo.png",
+                  ),
+                ],
               ),
-              customSizeBox,
-              ElevatedButtonCusstom(
-                buttonText: "Sign in With Facebook",
-                onPressed: () async {
-                  setState(() {
-                    showLoader = true;
-                  });
-                  await loginWithFB();
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    if (kDebugMode) {
-                      print(user.displayName);
-                      print(user.email);
-                    }
-                    await updateUserProfilefromFB(user);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  user: user,
-                                )));
-                  }
-                  customSnackBarMSG = "Login Successfull";
-                  setState(() {
-                    showLoader = false;
-                  });
-                },
-              ),
-              customSizeBox,
-              ElevatedButtonCusstom(
-                buttonText: "Sign in With Twitter",
-                onPressed: () async {
-                  setState(() {
-                    showLoader = true;
-                  });
-                  await loginWithTwitter();
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    if (kDebugMode) {
-                      print(user.displayName);
-                      print(user.email);
-                    }
-                    await updateUserProfilefromTwitter(user);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  user: user,
-                                )));
-                  }
-                  customSnackBarMSG = "Login Successfull";
-                  setState(() {
-                    showLoader = false;
-                  });
-                },
-              ),
-              customSizeBox,
-              ElevatedButtonCusstom(
-                buttonText: "Sign in With Github",
-                onPressed: () async {
-                  setState(() {
-                    showLoader = true;
-                  });
-                  await loginWithGithub(context);
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    if (kDebugMode) {
-                      print(user.displayName);
-                      print(user.email);
-                    }
-                    await updateUserProfilefromGithub(user);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  user: user,
-                                )));
-                  }
-                  customSnackBarMSG = "Login Successfull";
-                  setState(() {
-                    showLoader = false;
-                  });
-                },
-              ),
+              // ElevatedButtonCusstom(
+              //   buttonText: "Sign in With Google",
+              //   onPressed: () async {
+              //     setState(() {
+              //       showLoader = true;
+              //     });
+              //     await loginWithGoogle();
+              //     final user = FirebaseAuth.instance.currentUser;
+              //     if (user != null) {
+              //       if (kDebugMode) {
+              //         print(user.displayName);
+              //         print(user.email);
+              //       }
+              //       await updateUserProfilefromGoogle(user);
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => HomePage(
+              //                     user: user,
+              //                   )));
+              //     }
+              //     customSnackBarMSG = "Login Successfull";
+              //     setState(() {
+              //       showLoader = false;
+              //     });
+              //   },
+              // ),
+              // customSizeBox,
+              // ElevatedButtonCusstom(
+              //   buttonText: "Sign in With Facebook",
+              //   onPressed: () async {
+              //     setState(() {
+              //       showLoader = true;
+              //     });
+              //     await loginWithFB();
+              //     final user = FirebaseAuth.instance.currentUser;
+              //     if (user != null) {
+              //       if (kDebugMode) {
+              //         print(user.displayName);
+              //         print(user.email);
+              //       }
+              //       await updateUserProfilefromFB(user);
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => HomePage(
+              //                     user: user,
+              //                   )));
+              //     }
+              //     customSnackBarMSG = "Login Successfull";
+              //     setState(() {
+              //       showLoader = false;
+              //     });
+              //   },
+              // ),
+              // customSizeBox,
+              // ElevatedButtonCusstom(
+              //   buttonText: "Sign in With Twitter",
+              //   onPressed: () async {
+              //     setState(() {
+              //       showLoader = true;
+              //     });
+              //     await loginWithTwitter();
+              //     final user = FirebaseAuth.instance.currentUser;
+              //     if (user != null) {
+              //       if (kDebugMode) {
+              //         print(user.displayName);
+              //         print(user.email);
+              //       }
+              //       await updateUserProfilefromTwitter(user);
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => HomePage(
+              //                     user: user,
+              //                   )));
+              //     }
+              //     customSnackBarMSG = "Login Successfull";
+              //     setState(() {
+              //       showLoader = false;
+              //     });
+              //   },
+              // ),
+              // customSizeBox,
+              // ElevatedButtonCusstom(
+              //   buttonText: "Sign in With Github",
+              //   onPressed: () async {
+              //     setState(() {
+              //       showLoader = true;
+              //     });
+              //     await loginWithGithub(context);
+              //     final user = FirebaseAuth.instance.currentUser;
+              //     if (user != null) {
+              //       if (kDebugMode) {
+              //         print(user.displayName);
+              //         print(user.email);
+              //       }
+              //       await updateUserProfilefromGithub(user);
+              //       Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => HomePage(
+              //                     user: user,
+              //                   )));
+              //     }
+              //     customSnackBarMSG = "Login Successfull";
+              //     setState(() {
+              //       showLoader = false;
+              //     });
+              //   },
+              // ),
               customSizeBox,
               InkWell(
                 onTap: () {
